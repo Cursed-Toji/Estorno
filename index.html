@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Estorno</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 16px;
+      width: 380px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 13px;
+      color: #cbd5f5;
+      display: block;
+      margin-top: 12px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 5px;
+      background: #0f172a;
+      color: #fff;
+    }
+
+    input:focus {
+      outline: 2px solid #3b82f6;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 10px #3b82f6;
+    }
+
+    .result {
+      margin-top: 20px;
+      background: #0f172a;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .highlight {
+      color: #22c55e;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>💰 Calculadora de Estorno</h1>
+
+    <label>Valor do contrato (R$)</label>
+    <input type="number" id="valor" step="0.01" placeholder="Ex: 5148">
+
+    <label>Data de início</label>
+    <input type="date" id="inicio">
+
+    <label>Data de cancelamento</label>
+    <input type="date" id="cancelamento">
+
+    <button onclick="calcular()">Calcular Estorno</button>
+
+    <div class="result" id="resultado" style="display:none;"></div>
+  </div>
+
+  <script>
+    function calcular() {
+      const valor = parseFloat(document.getElementById('valor').value);
+      const inicio = new Date(document.getElementById('inicio').value);
+      const cancelamento = new Date(document.getElementById('cancelamento').value);
+
+      if (!valor || !inicio || !cancelamento) {
+        alert('Preencha todos os campos');
+        return;
+      }
+
+      const diasContrato = 365;
+      const diffTime = cancelamento - inicio;
+      const diasUsados = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const diasRestantes = diasContrato - diasUsados;
+
+      const valorPorDia = valor / diasContrato;
+      const estorno = valorPorDia * diasRestantes;
+
+      document.getElementById('resultado').style.display = 'block';
+      document.getElementById('resultado').innerHTML = `
+        📊 Dias usados: <strong>${diasUsados}</strong><br>
+        ⏳ Dias restantes: <strong>${diasRestantes}</strong><br>
+        💵 Valor por dia: <strong>R$ ${valorPorDia.toFixed(4)}</strong><br>
+        <hr>
+        💰 Total a estornar:<br>
+        <span class="highlight">R$ ${estorno.toFixed(2)}</span>
+      `;
+    }
+  </script>
+
+</body>
+</html>
